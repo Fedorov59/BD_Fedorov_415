@@ -1,0 +1,3 @@
+﻿UPDATE TCATERER
+  SET phone=4444444
+  WHERE name='CATERER4'

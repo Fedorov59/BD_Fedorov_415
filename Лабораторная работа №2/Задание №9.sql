@@ -1,0 +1,6 @@
+﻿ALTER TABLE TMATERIAL DROP CONSTRAINT FK_MATERIAL_MESSURE;
+
+ALTER TABLE tMaterial add constraint FK_MATERIAL_MESSURE foreign key (ID_MESSURE) references tMESSURE (ID_MESSURE) on delete set null;
+
+DELETE FROM tMessure 
+WHERE LEN(name)<2
