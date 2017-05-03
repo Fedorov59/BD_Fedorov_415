@@ -1,0 +1,118 @@
+﻿ALTER TABLE TEMPLOYER
+  ADD id_manager int;
+UPDATE TEMPLOYER SET id_manager=1
+    WHERE id_employer BETWEEN 2 AND 4;
+UPDATE TEMPLOYER
+  SET id_manager = 3
+    WHERE id_employer = 5; /* 33 задание */
+
+ALTER TABLE TGROUP
+  ADD min_group int;
+UPDATE TGROUP SET min_group = 1
+    WHERE ID_GROUP BETWEEN 1 AND 3;
+UPDATE TGROUP SET min_group = 2
+    WHERE id_group > 3;
+SELECT * FROM TGROUP 
+  WHERE min_group = 1;
+SELECT * FROM TGROUP 
+  WHERE min_group = 2; /* 34 задание */
+
+CREATE TABLE TEXEMP(
+  id_employer INT NOT NULL,
+  name NVARCHAR2(20) NOT NULL,
+  surname NVARCHAR2(20) NOT NULL,
+  father_name NVARCHAR2(20),
+  birthdate DATE,
+  id_job INT,
+  id_manager INT,
+  CONSTRAINT PK_EXEMP
+    PRIMARY KEY (ID_EMPLOYER));
+INSERT INTO TEXEMP (id_employer, name, surname, father_name, 
+    birthdate, id_job, id_manager)
+  VALUES (1, 'Scott', 'Fuller', 'Father_name', '13.03.1970', 21, 3); /* 35 задание */
+
+ALTER TABLE TEXEMP
+  ADD dismissed DATE;
+UPDATE TEXEMP
+  SET dismissed= '01.01.2009'; /* 36 задание */
+
+CREATE TABLE TCONTACT(
+  id_contact INT NOT NULL,
+  id_caterer INT,
+  name NVARCHAR2(20) NOT NULL,
+  surname NVARCHAR2(20) NOT NULL,
+  father_name NVARCHAR2(30),
+  telephone NVARCHAR2(12) NOT NULL,
+  CONSTRAINT PK_Contact
+    PRIMARY KEY (ID_CONTACT),
+  CONSTRAINT FK_Contact_Caterer
+    FOREIGN KEY (ID_CATERER) REFERENCES TCATERER(ID_CATERER) 
+      ON DELETE CASCADE);
+
+INSERT INTO TCONTACT (ID_CONTACT, ID_CATERER, NAME, SURNAME, FATHER_NAME, TELEPHON)
+  VALUES (1, 1, 'Name1', 'Surname1', 'Father_name1', '80000000001');
+INSERT INTO TCONTACT (ID_CONTACT, ID_CATERER, NAME, SURNAME, FATHER_NAME, TELEPHON)
+  VALUES (2, 2, 'Name2', 'Surname2', 'Father_name2', '80000000002');
+INSERT INTO TCONTACT (ID_CONTACT, ID_CATERER, NAME, SURNAME, FATHER_NAME, TELEPHON)
+  VALUES (3, 3, 'Name3', 'Surname3', 'Father_name3', '80000000003');
+INSERT INTO TCONTACT (ID_CONTACT, ID_CATERER, NAME, SURNAME, FATHER_NAME, TELEPHON)
+  VALUES (4, 3, 'Name4', 'Surname4', 'Father_name4', '80000000004');
+INSERT INTO TCONTACT (ID_CONTACT, ID_CATERER, NAME, SURNAME, FATHER_NAME, TELEPHON)
+  VALUES (5, 5, 'Name5', 'Surname5', 'Father_name5', '80000000005');
+SELECT NAME, SURNAME, FATHER_NAME, TELEPHON FROM TCONTACT; /* 37 задание */
+
+SELECT * FROM TCATERER
+  ORDER BY NAME; /* 38 задание */
+
+SELECT * FROM TCATERER JOIN TCONTACT
+    ON TCATERER.ID_CATERER = TCONTACT.ID_CATERER
+  ORDER BY TCATERER.NAME, TCONTACT.SURNAME, TCONTACT.NAME, TCONTACT.FATHER_NAME; /* 39 задание */
+
+SELECT TSTORE.name, TMATERIAL.name, TSURPLUS.volume
+  FROM TSTORE LEFT JOIN TSURPLUS 
+    ON TSTORE.id_store = TSURPLUS.id_store
+  LEFT JOIN TMATERIAL 
+    ON TMATERIAL.id_material = TSURPLUS.id_material
+  ORDER BY TSTORE.id_store, TSURPLUS.volume DESC; /* 40 задание */
+
+SELECT TMATERIAL.name, TCATERER.name, SUM(TSUPPLY.volume)
+  FROM TCATERER JOIN TSUPPLY 
+    ON TCATERER.id_caterer= TSUPPLY.id_caterer
+  JOIN TMATERIAL
+    ON TMATERIAL.id_material = TSUPPLY.id_material
+  WHERE TSUPPLY.supply_date >= '01.01.2017' AND TSUPPLY.supply_date <= SYSDATE
+  GROUP BY TMATERIAL.name, TCATERER.name ORDER BY TCATERER.name, TMATERIAL.name; /* 41 задание */
+
+SELECT TMATERIAL.name, AVG(TSUPPLY.volume * TINPRICE.price)
+    ON TMATERIAL.id_material = TSUPPLY.id_material
+  LEFT JOIN TINPRICE 
+    ON TMATERIAL.id_material = TINPRICE.id_material
+  WHERE TSUPPLY.supply_date >= '01.01.2017' AND TSUPPLY.supply_date <= SYSDATE
+  GROUP BY TMATERIAL.name ORDER BY TMATERIAL.name; /* 42 задание */
+
+SELECT TMATERIAL.name, SUM(TSUPPLY.volume)
+  FROM TMATERIAL LEFT JOIN TSUPPLY 
+    ON TMATERIAL.id_material = TSUPPLY.id_material
+  WHERE TSUPPLY.supply_date >= '01.01.2017' AND TSUPPLY.supply_date <= SYSDATE
+  ORDER BY TMATERIAL.name; /* 43 задание */
+
+SELECT TMATERIAL.name, AVG(TSUPPLY.volume * TINPRICE.price), SUM(AVG(TSUPPLY.volume * TINPRICE.price)*TINPRICE.price)
+    ON TMATERIAL.id_material = TSUPPLY.id_material
+  LEFT JOIN TINPRICE 
+    ON TSURPLUS.id_store = TSTORE.id_store
+  GROUP BY TMATERIAL.name ORDER BY TMATERIAL.name; /* 44 задание */
+
+SELECT name FROM TSTORE INNER JOIN TSURPLUS
+  ON TSTORE.id_store = TSURPLUS.id_store
+  GROUP BY name HAVING SUM(volume) = 0; /* 45 задание */
+
+SELECT name FROM TCATERER INNER JOIN TSUPPLY
+  ON TCATERER.id_caterer = TSUPPLY.id_caterer
+  WHERE TSUPPLY.supply_date >= '01.01.2017' AND TSUPPLY.supply_date <= SYSDATE
+  GROUP BY name HAVING SUM(volume) < 1000; /* 46 задание */
+
+SELECT NAME FROM TCATERER JOIN TSUPPLY
+  ON TCATERER.id_caterer = TSUPPLY.id_caterer
+  WHERE TSUPPLY.supply_date >= '01.01.2017' AND TSUPPLY.supply_date <= SYSDATE
+  GROUP BY NAME HAVING SUM(volume) = MAX(volume);
+  GROUP BY NAME HAVING SUM(volume) = MAX(volume); /* 47 задание */

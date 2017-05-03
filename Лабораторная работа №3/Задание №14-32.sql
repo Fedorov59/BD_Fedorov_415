@@ -5,7 +5,7 @@ SELECT id_material,name FROM TMATERIAL; /* 15 задание */
 
 SELECT name,surname,father_name,birthdate FROM TEMPLOYER; /* 16 задание */
 
-SELECT * FROM TEMPLOYER WHERE father_name = 'М'; /* 17 задание */
+SELECT * FROM TEMPLOYER WHERE sex = 'М'; /* 17 задание */
 
 SELECT * FROM TCATERER 
   WHERE id_caterer IN
@@ -13,19 +13,23 @@ SELECT * FROM TCATERER
       AND supply_date <='30.06.2009'); /* 18 задание */
 
 SELECT * FROM TSECTION
-  WHERE id_section IN
+  WHERE id_section NOT IN
     (SELECT id_section FROM TDELIVER where deliver_date >='01.08.2009' 
-      AND deliver_date <='31.08.2009' AND id_material =0); /* 19 задание */
+      AND deliver_date <='31.08.2009'); /* 19 задание */
+
+SELECT NAME FROM TSECTION
+  WHERE id_section IN 
+    (SELECT id_section FROM TDELIVER WHERE deliver_date = SYSDATE); /* 20 задание */
 
 SELECT name FROM TMATERIAL
   WHERE id_material IN
-    (SELECT id_material FROM TDELIVER WHERE deliver_date >='01.01.2017' and deliver_date <=SYSDATE ); /* 21 задание */
+    (SELECT id_material FROM TSUPPLY WHERE supply_date >='01.01.2017' and supply_date <=SYSDATE ); /* 21 задание */
 
 SELECT name FROM TMATERIAL
   WHERE id_material not IN
-    (SELECT id_material FROM TDELIVER WHERE deliver_date >='01.01.2017' and deliver_date <=SYSDATE) AND
+    (SELECT id_material FROM TSUPPLY WHERE supply_date >='01.01.2017' and supply_date <=SYSDATE) AND
         id_material IN 
-          (SELECT id_material FROM TDELIVER WHERE id_store=0); /* 22 задание */
+          (SELECT id_material FROM TSUPPLY WHERE volume=0); /* 22 задание */
 
 SELECT TSECTION.id_section, TEMPLOYER.name, TEMPLOYER.surname, TEMPLOYER.father_name
   FROM TSECTION, TEMPLOYER
@@ -37,11 +41,13 @@ SELECT TSECTION.id_section, TEMPLOYER.name, TEMPLOYER.surname, TEMPLOYER.father_
 
 SELECT TСATERER.name, TSUPPLY.id_material, TSUPPLY.volume, TSUPPLY.supply_date, TINPRICE.price
   FROM TСATERER, TSUPPLY, TINPRICE
-    WHERE TСATERER.id_caterer=TSUPPLY.id_caterer AND TSUPPLY.id_material=TINPRICE.id_material AND supply_date>='01.01.2009' AND supply_date<='31.03.2009'; /* 25 задание */
+    WHERE TСATERER.id_caterer=TSUPPLY.id_caterer AND TSUPPLY.id_material=TINPRICE.id_material 
+      AND supply_date>='01.01.2009' AND supply_date<='31.03.2009' ; /* 25 задание */
 
 SELECT TСATERER.name, TSUPPLY.id_material, TSUPPLY.volume, TSUPPLY.supply_date, TINPRICE.price
   FROM TСATERER, TSUPPLY, TINPRICE
-    WHERE TСATERER.id_caterer=TSUPPLY.id_caterer AND TSUPPLY.id_material=TINPRICE.id_material AND supply_date>='01.01.2009' AND supply_date<='31.03.2009' AND TCATERER.address='г. Пермь'; /* 26 задание */
+    WHERE TСATERER.id_caterer=TSUPPLY.id_caterer AND TSUPPLY.id_material=TINPRICE.id_material
+      AND supply_date>='01.01.2009' AND supply_date<='31.03.2009' AND TCATERER.address='г. Пермь'; /* 26 задание */
 
 SELECT TMATERIAL.name, TSTORE.NAME, TSURPLUS.volume
   FROM TMATERIAL, TSTORE, TSURPLUS
